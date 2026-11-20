@@ -868,7 +868,8 @@ def preprocess_frame(bgr_frame, img_size, device):
     canvas       = np.full((img_size, img_size, 3), 114, dtype=np.uint8)
     canvas[top:top+nh, left:left+nw] = resized
 
-    tensor = (torch.from_numpy(canvas)
+    # BGR (OpenCV) → RGB, matching what Ultralytics predict() feeds the full model
+    tensor = (torch.from_numpy(canvas[..., ::-1].copy())
               .permute(2, 0, 1)
               .unsqueeze(0)
               .float()

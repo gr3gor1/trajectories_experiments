@@ -570,7 +570,8 @@ def preprocess_frame(bgr_frame, img_size, device):
     canvas       = np.full((img_size, img_size, 3), 114, dtype=np.uint8)
     canvas[top:top+nh, left:left+nw] = resized
 
-    tensor = (torch.from_numpy(canvas)
+    # BGR (OpenCV) → RGB, matching what Ultralytics predict() feeds the full model
+    tensor = (torch.from_numpy(canvas[..., ::-1].copy())
               .permute(2, 0, 1)
               .unsqueeze(0)
               .float()
@@ -606,7 +607,7 @@ def _decode_head_generic(cv2_out, cv3_out, head_idx, img_size, orig_w, orig_h,
     x1 = (anchors[:, 0] - lt[:, 0]) * stride
     y1 = (anchors[:, 1] - lt[:, 1]) * stride
     x2 = (anchors[:, 0] + rb[:, 0]) * stride
-    y2 = (anchors[:, 1] - rb[:, 1]) * stride
+    y2 = (anchors[:, 1] + rb[:, 1]) * stride
 
     cls_logits = cv3_out[0].permute(1, 2, 0).reshape(n_anchors, nc)
     conf, cls  = cls_logits.sigmoid().max(dim=-1)
