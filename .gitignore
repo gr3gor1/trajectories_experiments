@@ -1,0 +1,19 @@
+# environments, caches, editors
+.venv/
+__pycache__/
+*.pyc
+.idea/
+
+# raw experiment data (kept locally, not versioned)
+GROUND_LEVEL.MP4
+ASV_logs*.csv
+
+# local model weights that are not part of the repository
+/8n.pt
+/8s.pt
+/8m.pt
+train/yolo26n.pt
+
+# large, regenerable outputs
+*.mp4
+results/*/frames/*/
