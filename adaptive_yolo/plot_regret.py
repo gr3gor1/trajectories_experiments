@@ -19,7 +19,7 @@ from .plotting import AXIS, RAMP5, model_name, save, theme
 
 PANEL = {
     "adapted": "Reward = (1 − miss) − 1 · latency / latency(FULL)",
-    "literal": "Reward = (1 − miss) − (0.01 / 3) · exit index  (paper's λ, ε = 0.01)",
+    "literal": "Reward = (1 − miss) − (0.01 / 3) · exit index",
 }
 
 
@@ -42,7 +42,7 @@ def plot_model(df: pd.DataFrame, model: str, out: Path):
     g.axes.flat[0].set_ylabel("Cumulative regret")
     sns.move_legend(g, "lower center", bbox_to_anchor=(0.5, -0.02), ncol=len(taus), title="target τ",
                     frameon=False)
-    g.figure.suptitle(f"Cumulative regret of the UCB router, SMARTCOMP'26 definition  —  {model_name(model)}",
+    g.figure.suptitle(f"Cumulative regret of the UCB router  —  {model_name(model)}",
                       x=0.03, ha="left", y=0.985)
     g.figure.text(0.03, 0.905, "instant regret = mean reward of the optimal arm − reward of the arm chosen at "
                                "that step; every frame counted, random FULL probes included",
