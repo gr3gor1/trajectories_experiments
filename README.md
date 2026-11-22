@@ -252,19 +252,26 @@ by the chosen level, dashed red: missed.</p>
 * **P5 is rarely needed in this scene.** Once the camera ASV's own bow is excluded, P3+P4 alone keeps 99.7–99.9% of
   the full model's detections at a measured 1.13–1.15×. Since the camera follows the two vessels, their apparent
   size stays roughly constant, and the full model is mostly needed for safety rather than for size.
-* **The learned router dominates the paper's rule.** At similar projected speed, it misses less often at every
-  scale: 17.9% vs 22.0% on YOLOv8n (τ = 0.4), 15.4% vs 23.4% on YOLOv8s (τ = 0.4) and 6.9% vs 12.2% on YOLOv8m
-  (τ = 0.3). It needs no distance thresholds, τ directly sets the trade-off, and it discovers on its own that close
-  vessels mean misses for the cheaper levels.
+* **The learned router offers better operating points than the paper's rule at some targets, not at all of them.**
+  In projected speedup, there are targets at every scale that are both faster and miss less often: YOLOv8n at
+  τ = 0.4 (1.37× vs 1.36×, 17.9% vs 22.0% misses) and τ = 0.5, YOLOv8s at τ = 0.5 (1.30× vs 1.28×, 19.7% vs 23.4%)
+  and YOLOv8m at τ = 0.4 and τ = 0.5 (1.27× and 1.28× vs 1.24×, 9.6% and 11.0% vs 12.2%). In measured speedup this
+  holds only for YOLOv8m at τ = 0.5, and by a small margin (1.21× vs 1.20×); on YOLOv8n and YOLOv8s the learned router
+  at τ = 0.4–0.5 trades 0.02–0.06× of speed for fewer misses. At τ = 0.1 it mostly runs P3+P4 and gains nothing over
+  always running P3+P4. Its practical advantage is that it needs no distance thresholds and that τ sets the
+  trade-off.
 * **The trajectory is a risk signal, not a visibility signal.** The oracle reaches 1.29–1.39× without losing a single
   detection, which no trajectory-only criterion approaches. Most P3 misses come from other objects in the scene.
-* **The router converges locally, not globally.** Under the regret definition of
-  [arXiv:2604.24810](https://arxiv.org/abs/2604.24810), regret only stays flat for τ = 0.1. For larger τ it grows
-  with the changes of the scene (marina passage, close approach), which a 123-second window from a cold start does
-  not let it average out.
-* **Projected speedups overstate the real gain.** Measured per frame, the gain is up to 0.13× lower than the
-  projection. End-to-end it drops to 1.05–1.13×, because decoding a 4K frame costs about as much as the network
-  itself. Decoding and resizing on the GPU would let more of the saving through.
+* **Convergence is not shown on this recording.** Under the regret definition of
+  [arXiv:2604.24810](https://arxiv.org/abs/2604.24810), with the latency-based reward, regret is lowest at τ = 0.1–0.2:
+  at τ = 0.1 it grows slowly and roughly linearly on YOLOv8n and YOLOv8s (36 and 28 after 3,686 frames) and stays near
+  zero on YOLOv8m. At τ ≥ 0.3 the regret per frame is higher in the last third of the window than in the first at
+  every scale, so the growth is not sub-linear. The definition compares against a single best level, while the
+  router limits its miss risk to τ, and a 123-second window from a cold start is too short to settle the question.
+* **Projected speedups overstate the real gain.** Measured per frame, the gain is up to 0.14× lower than the
+  projection. End-to-end, the routing criteria reach 1.05–1.12× (1.13–1.16× for always running P3), because decoding
+  a 4K frame costs about as much as the network itself. Decoding and resizing on the GPU would let more of the saving
+  through.
 
 </div>
 
