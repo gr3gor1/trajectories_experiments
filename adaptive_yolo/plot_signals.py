@@ -37,6 +37,7 @@ from .plotting import (AXIS, CRITICAL, INK, INK_2, LEVEL_COLOUR, LEVEL_LABEL, LE
 SKIP = {"always_P3", "always_P3_P4", "always_FULL"}
 LEVEL_CMAP = ListedColormap([LEVEL_COLOUR[l] for l in LEVELS])
 MISS_CMAP = ListedColormap([SURFACE, CRITICAL])
+STRIP_DPI = 450  # the strips need at least one pixel per frame, or single-frame events are dropped
 
 
 def load(results: Path, model: str):
@@ -129,7 +130,7 @@ def plot_policy(frames, summary, fps, model, policy, out: Path, xlabel: str):
         for ax, y, lab in ((ax_d, 30, "30 m"), (ax_r, -0.5, "−0.5 m/s")):
             ax.axhline(y, color=INK_2, linewidth=1, zorder=2)
             ax.annotate(lab, (1.0, y), xycoords=("axes fraction", "data"), xytext=(4, 0),
-                        textcoords="offset points", va="center", fontsize="small")
+                        textcoords="offset points", va="center")
 
     lvl = frames[policy].map({l: i for i, l in enumerate(LEVELS)}).to_numpy()[None, :]
     strip(ax_l, lvl, LEVEL_CMAP, 2, ["level"])
@@ -139,12 +140,12 @@ def plot_policy(frames, summary, fps, model, policy, out: Path, xlabel: str):
     ax_m.set_xlabel(xlabel)
 
     fig.suptitle(f"{title}  —  {model_name(model)}", x=0.07, ha="left", y=0.995)
-    fig.text(0.07, 0.948, rule, ha="left", fontsize="small")
-    fig.text(0.07, 0.922, metrics_line(summary, policy), ha="left", fontsize="small")
+    fig.text(0.07, 0.938, rule, ha="left")
+    fig.text(0.07, 0.908, metrics_line(summary, policy), ha="left")
     fig.legend(handles=legend_handles(), loc="lower left", bbox_to_anchor=(0.065, 0.0), ncol=4,
                handlelength=1.2, columnspacing=1.6)
-    fig.subplots_adjust(left=0.08, right=0.93, top=0.895, bottom=0.12)
-    save(fig, out)
+    fig.subplots_adjust(left=0.08, right=0.92, top=0.885, bottom=0.13)
+    save(fig, out, dpi=STRIP_DPI)
 
 
 def plot_overview(frames, summary, fps, model, policies, out: Path, xlabel: str):
@@ -162,7 +163,7 @@ def plot_overview(frames, summary, fps, model, policies, out: Path, xlabel: str)
     sns.lineplot(data=sec, x="frame_x", y="distance_m", ax=ax_d, color=INK, linewidth=2)
     ax_d.axhline(30, color=MUTED, linewidth=1)
     ax_d.annotate("30 m", (1.0, 30), xycoords=("axes fraction", "data"), xytext=(4, 0),
-                  textcoords="offset points", va="center", fontsize="small")
+                  textcoords="offset points", va="center")
     ax_d.set_xlim(0, n)
     ax_d.set_ylim(0, max(45, sec["distance_m"].max() * 1.1))
     ax_d.set_ylabel("Distance (m)")
@@ -186,7 +187,7 @@ def plot_overview(frames, summary, fps, model, policies, out: Path, xlabel: str)
     fig.legend(handles=legend_handles(), loc="lower left", bbox_to_anchor=(0.02, 0.0), ncol=4,
                handlelength=1.2, columnspacing=1.6)
     fig.subplots_adjust(left=0.26, right=0.95, top=0.95, bottom=0.08)
-    save(fig, out)
+    save(fig, out, dpi=STRIP_DPI)
 
 
 def main(argv=None):

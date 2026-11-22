@@ -260,13 +260,12 @@ def main(argv=None):
             rec = df[(df["moment"] == moment) & (df["criterion"] == name)].iloc[0]
             status = (f"missed {len(rec['missed'])} of {rec['n_full']}" if rec["missed"]
                       else f"all {rec['n_full']} found")
-            ax.set_title(f"{LEVEL_LABEL[rec['level']]} · {status}", fontsize="x-small", pad=3)
+            ax.set_title(f"{LEVEL_LABEL[rec['level']]} · {status}", pad=3)
             if r == 0:
-                ax.annotate(name, (0, 1), xycoords="axes fraction", xytext=(0, 22), textcoords="offset points",
-                            fontsize="small", va="bottom")
+                ax.annotate(name, (0, 1), xycoords="axes fraction", xytext=(0, 26), textcoords="offset points",
+                            va="bottom")
             if c == 0:
-                ax.set_ylabel(moment, fontsize="x-small", rotation=0, ha="right", va="center",
-                              labelpad=6)
+                ax.set_ylabel("\n".join(moment.split(" · ")), rotation=0, ha="right", va="center", labelpad=6)
 
     handles = [Line2D([], [], color=FOUND, linewidth=2, label="full-model detection, also found"),
                Line2D([], [], color=CRITICAL, linewidth=2, linestyle=(0, (3, 2)), label="full-model detection, missed")]
@@ -298,8 +297,8 @@ def draw_tile(data: pd.DataFrame, **_):
         ax.add_patch(Rectangle((d.x1, d.y1), d.x2 - d.x1, d.y2 - d.y1, fill=False, edgecolor=CRITICAL,
                                linewidth=1.8, linestyle=(0, (3, 2))))
     for colour, d in rec["names"].items():  # name the two logged vessels
-        ax.annotate(f"{colour} ASV", (d.x1, d.y1), xytext=(0, 2), textcoords="offset points", fontsize="xx-small",
-                    va="bottom",
+        # below the vessel, over open water, so the label hides no detection box
+        ax.annotate(f"{colour} ASV", (d.x1, d.y2), xytext=(0, -5), textcoords="offset points", va="top",
                     bbox={"boxstyle": "round,pad=0.15", "fc": "white", "ec": "none", "alpha": 0.8})
     ax.set_xlim(x1, x2)
     ax.set_ylim(y2, y1)

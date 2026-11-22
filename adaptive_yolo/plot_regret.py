@@ -36,7 +36,7 @@ def plot_model(df: pd.DataFrame, model: str, out: Path):
     g.set_titles(template="")  # replace seaborn's "reward = …" facet titles with descriptive ones
     for ax, v in zip(g.axes.flat, PANEL):
         best = long.loc[long["reward"] == v, "optimal"].iloc[0].replace("_", " + ")
-        ax.set_title(f"{PANEL[v]}\noptimal arm (highest mean reward): {best}", loc="left", fontsize="small")
+        ax.set_title(f"{PANEL[v]}\noptimal arm (highest mean reward): {best}", loc="left")
         ax.axhline(0, color=AXIS, linewidth=1, zorder=0)
         ax.set_xlabel("Time step (frame)")
     g.axes.flat[0].set_ylabel("Cumulative regret")
@@ -45,8 +45,7 @@ def plot_model(df: pd.DataFrame, model: str, out: Path):
     g.figure.suptitle(f"Cumulative regret of the UCB router  —  {model_name(model)}",
                       x=0.03, ha="left", y=0.985)
     g.figure.text(0.03, 0.905, "instant regret = mean reward of the optimal arm − reward of the arm chosen at "
-                               "that step; every frame counted, random FULL probes included",
-                  fontsize="small")
+                               "that step; every frame counted, random FULL probes included")
     g.figure.subplots_adjust(top=0.72, bottom=0.21, left=0.07, right=0.98, wspace=0.18)
     save(g.figure, out)
 

@@ -53,7 +53,7 @@ def theme() -> None:
     """Plain seaborn defaults (style "darkgrid", context "notebook", seaborn's font and sizes).
 
     Only `pdf.fonttype` is set (embed TrueType so PDF text stays editable); everything typographic
-    is seaborn's own. Smaller text in the scripts uses seaborn-relative sizes ("small", "x-small").
+    is seaborn's own: the scripts set no font family, size or weight.
     """
     sns.set_theme(rc={"pdf.fonttype": 42})
 
@@ -77,6 +77,6 @@ def save(fig, stem: Path, dpi: int = 160) -> None:
     """Write <stem>.pdf and <stem>.png (stem may contain dots, e.g. learned_ucb_t0.3)."""
     stem = Path(stem)
     stem.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(stem.parent / (stem.name + ".pdf"))
+    fig.savefig(stem.parent / (stem.name + ".pdf"), dpi=dpi)  # dpi applies to rasterised artists
     fig.savefig(stem.parent / (stem.name + ".png"), dpi=dpi)
     plt.close(fig)

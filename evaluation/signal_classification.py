@@ -4,6 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
+import seaborn as sns
 
 df = pd.read_csv("C:/Users/gr3g2/Desktop/MUSIT_MDM/sailboat/output_detected_per_second_30.csv")
 df['timestep'] = range(len(df))
@@ -16,17 +17,8 @@ MARKER_P3   = 'o'        # circle
 full = df[df['signal'] == 'FULL']
 p3   = df[df['signal'] == 'P3']
 
-plt.rcParams.update({
-    'font.family': 'DejaVu Sans',
-    'font.size': 28,
-    'axes.linewidth': 2.0,
-    'axes.labelsize': 28,
-    'axes.titlesize': 30,
-    'xtick.labelsize': 22,
-    'ytick.labelsize': 22,
-    'legend.fontsize': 20,
-    'figure.dpi': 300,
-})
+# seaborn's default font and text proportions, scaled up for the 18 x 9 in figure
+sns.set_theme(style='white', font_scale=2.2, rc={'axes.linewidth': 2.0, 'figure.dpi': 300})
 
 fig, ax1 = plt.subplots(figsize=(18, 9))
 
@@ -38,7 +30,7 @@ ax2 = ax1.twinx()
 ax1.scatter(p3['timestep'],   p3['distance_m'],   color=COLOR_P3,   marker=MARKER_P3,   s=120, alpha=0.85, zorder=3, linewidths=0)
 ax1.scatter(full['timestep'], full['distance_m'], color=COLOR_FULL, marker=MARKER_FULL, s=150, alpha=0.95, zorder=4, linewidths=0)
 ax1.axhline(30, color='#444444', linestyle='--', linewidth=2.0, alpha=0.6, zorder=2)
-ax1.text(1, 31.2, 'dist = 30 m', fontsize=22, color='#444444', va='bottom')
+ax1.text(1, 31.2, 'dist = 30 m', color='#444444', va='bottom')
 ax1.set_ylabel('Distance (m)', color='#222222')
 ax1.set_xlabel('Timestep (s)', color='#222222')
 ax1.tick_params(axis='y', labelcolor='#222222')
@@ -47,7 +39,7 @@ ax1.set_ylim(0, 45)
 ax2.scatter(p3['timestep'],   p3['closure_rate_ms'],   color=COLOR_P3,   marker='v', s=100, alpha=0.60, zorder=3, linewidths=0)
 ax2.scatter(full['timestep'], full['closure_rate_ms'], color=COLOR_FULL, marker='^', s=130, alpha=0.80, zorder=4, linewidths=0)
 ax2.axhline(-0.5, color='#888888', linestyle=':', linewidth=2.0, alpha=0.7, zorder=2)
-ax2.text(1, -0.62, 'rate = −0.5 m/s', fontsize=22, color='#666666', va='top')
+ax2.text(1, -0.62, 'rate = −0.5 m/s', color='#666666', va='top')
 ax2.set_ylabel('Closure Rate (m/s)', color='#222222')
 ax2.tick_params(axis='y', labelcolor='#222222')
 ax2.set_ylim(-3.5, 2.5)
@@ -77,7 +69,7 @@ fig.legend(handles=leg_handles, loc='lower center', bbox_to_anchor=(0.5, -0.12),
 fig.suptitle(
     'Signal Classification over Time\n'
     'FULL criterion: distance < 30 m  AND  closure rate < −0.5 m/s',
-    fontsize=28, color='#111111', ha='center', y=1.02
+    color='#111111', ha='center', y=1.02
 )
 
 ax1.grid(True, linestyle='--', linewidth=0.4, color='#cccccc', alpha=0.7)
